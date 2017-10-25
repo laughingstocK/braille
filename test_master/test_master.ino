@@ -308,19 +308,13 @@ void keyboardEvent() {
     // buff[2] = keyboardBuffer[3]; // Command byte
     // buff[3] = SPACE_BIT; // Space byte
     // buff[4] = keyboardBuffer[10]; // Thumb byte
-    // // Send data through serial port
+   // Send data through serial port
 
-    // buff[0] = 0x13; // Braille[0]
-    // buff[1] = 0x00; // Braille[1], in case of Thai
-    // buff[2] = 0x00; // Command byte
-    // buff[3] = 0x00; // Space byte
-    // buff[4] = 0x00; // Thumb byte
     buff[0] = 0x00; // Braille[0]
     buff[1] = 0x00; // Braille[1], in case of Thai
-    buff[2] = 0x0A; // Command byte
+    buff[2] = 0x00; // Command byte
     buff[3] = 0x00; // Space byte
-    buff[4] = 0x00; // Thumb byte
-
+    buff[4] = 0x01; // Thumb byte
 
     //Serial.println("case 3");
     if (buff[0] != 0 && buff[2] == 0 && buff[3] == 0 && buff[4] == 0 ) { //Braille Key
@@ -350,9 +344,6 @@ void keyboardEvent() {
       Serial.write(BT_buf, 5);
     }
 
-    //Serial.write(buff, 1);
-    // Serial.write(buff, 5);
-    // Serial1.write(buff, 5);
     // Clear entire bits after serial has been sent
     int j = 4; for (int i = 0; i < j; i++) THUMB_BITS[i] = false;
     j = 6; for (int i = 0; i < j; i++) COMMAND_BITS[i] = false;
@@ -792,7 +783,6 @@ byte BrailleKey[128][4] = {
   {KEY_SHIFT, KEY_T, 0x00, 0x00}, //94 char T
   {KEY_SHIFT, KEY_Q, 0x00, 0x00}, //95 char Q
 
-
   {0x00, 0x00, 0x00, 0x00}, //96
   {0x00, 0x00, 0x00, 0x00}, //97
   {0x00, 0x00, 0x00, 0x00}, //98
@@ -812,7 +802,7 @@ byte BrailleKey[128][4] = {
   {0x00, 0x00, 0x00, 0x00}, //112
   {0x00, 0x00, 0x00, 0x00}, //113
   {0x00, 0x00, 0x00, 0x00}, //114
-  {0x00, KEY_BACKSLASH , 0x00, 0x00}, //115 char \
+  {0x00, KEY_BACKSLASH , 0x00, 0x00}, //115 char
   {0x00, 0x00, 0x00, 0x00}, //116
   {KEY_SHIFT, KEY_Z, 0x00, 0x00}, //117 char Z
   {0x00, 0x00, 0x00, 0x00}, //118
@@ -823,7 +813,6 @@ byte BrailleKey[128][4] = {
   {0x00, KEY_RIGHT_BRACE , 0x00, 0x00}, //123 char ]
   {0x00, 0x00, 0x00, 0x00}, //124
   {KEY_SHIFT, KEY_Y, 0x00, 0x00}, //125 char Y
-
   {0x00, 0x00, 0x00, 0x00}, //126
   {0x00, 0x00, 0x00, 0x00} //127
 
@@ -843,12 +832,10 @@ byte BrialleKey2Byte[19][4] = {
   {0x20, 0x1D, KEY_SHIFT , KEY_I },//9 ณ
   {0x20, 0x39, 0x00 , KEY_4 },//10 ภ
   {0x20, 0x0E, KEY_SHIFT , KEY_L },//11 ศ
-
   {0x24, 0x25, KEY_SHIFT , KEY_S },//12 ฆ
   {0x24, 0x05, KEY_SHIFT , KEY_SEMICOLON  },//13 ซ
   {0x24, 0x0E, KEY_SHIFT , KEY_K },//14 ษ
   {0x24, 0x07, KEY_SHIFT , KEY_PERIOD }, //15 ฬ
-
   {0x30, 0x3E, KEY_SHIFT , KEY_COMMA  },//16 ฒ
   {0x31, 0x01, 0x00 , KEY_PERIOD  },//17 ใ
   {0x34, 0x3E, KEY_SHIFT , KEY_T }//18 ธ
@@ -991,7 +978,6 @@ byte SpaceKey[129][4] = {
 
 void F_BrailleKey() {
   if (buff[1] != 0) { //Braille Data 2 Byte
-      Serial.println("1111111111111111");
     for (int i = 0; i < 19; i++) {
       if (buff[0] == BrialleKey2Byte[i][0] && buff[1] == BrialleKey2Byte[i][1] ) {
         BT_buf[0] = 0xFE;
@@ -1007,20 +993,13 @@ void F_BrailleKey() {
   }
   else {
     int key_index = buff[0];
-    //Serial.write(key_index);
-    //Serial.write(key_index);
-    //Serial.print(key_index);
-    //Serial.write(buff[0]);
     BT_buf[0] = 0xFE;
     BT_buf[1] = 0x03;
-    BT_buf[2] = BrailleKey[buff[0]][default_lang_index];
+    BT_buf[2] = BrailleKey[key_index][default_lang_index];
     BT_buf[3] =  0x00;
-    BT_buf[4] =  BrailleKey[buff[0]][default_lang_index + 1];
+    BT_buf[4] =  BrailleKey[key_index][default_lang_index + 1];
     Serial1.write(BT_buf, 5);
     Serial.write(BT_buf, 5);
-    //Serial.write(key_index);
-    //Serial.write(BT_buf[4]);
-    //Serial.write(BrailleKey[key_index][default_lang_index + 1]);
     //releaseKey();
   }
 }
