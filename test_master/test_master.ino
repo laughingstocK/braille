@@ -314,7 +314,7 @@ void keyboardEvent() {
     buff[1] = 0x00; // Braille[1], in case of Thai
     buff[2] = 0x00; // Command byte
     buff[3] = 0x00; // Space byte
-    buff[4] = 0x01; // Thumb byte
+    buff[4] = 0x04; // Thumb byte
 
     //Serial.println("case 3");
     if (buff[0] != 0 && buff[2] == 0 && buff[3] == 0 && buff[4] == 0 ) { //Braille Key
